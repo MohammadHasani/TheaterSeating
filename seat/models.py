@@ -12,3 +12,15 @@ class Seat(models.Model):
 
     class Meta:
         unique_together = ('row', 'number')
+
+    @property
+    def is_aisle_seat(self):
+        return
+
+    @property
+    def is_front_row_seat(self):
+        return self.row.number == 1
+
+    @property
+    def is_high_seat(self):
+        return self.row.is_high_row
