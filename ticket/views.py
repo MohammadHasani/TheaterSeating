@@ -111,41 +111,46 @@ class TicketView(View):
 class FakerView(View):
     def get(self, request, *args, **kwargs):
         admin = User.objects.get(id=1)
-        new_hall = Hall.objects.create(user=admin, name='Kerman Theater')
-        new_rank = Rank.objects.create(hall=new_hall, name="economy", price='10000')
+        new_hall = Hall.objects.get(id=2)
+        new_rank = Rank.objects.create(hall=new_hall, name="economy", price='1000',color='#d6d6d6')
+        golden_rank = Rank.objects.get(id=5)
 
         sections = [
             # {'name': 'main hall', 'rows': {Row.POSITION_CHOICES.middle: 5}, 'seats': {'middle': 5}, 'properties': {
             #     'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
-            {'name': '1 hall', 'rows': {Row.POSITION_CHOICES.middle: 2, Row.POSITION_CHOICES.left: 2,
-                                        Row.POSITION_CHOICES.right: 2},
-             'seats': {Row.POSITION_CHOICES.middle: 2, Row.POSITION_CHOICES.left: 1,
-                       Row.POSITION_CHOICES.right: 1}, 'properties': {
+            {'name': '1 hall', 'rows': {Row.POSITION_CHOICES.middle: 10, Row.POSITION_CHOICES.left: 10,
+                                        Row.POSITION_CHOICES.right: 10},
+             'seats': {Row.POSITION_CHOICES.middle: 10, Row.POSITION_CHOICES.left: 3,
+                       Row.POSITION_CHOICES.right: 3}, 'properties': {
                 'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
 
-            {'name': '2 hall', 'rows': {Row.POSITION_CHOICES.middle: 2, Row.POSITION_CHOICES.left: 2,
-                                        Row.POSITION_CHOICES.right: 2},
-             'seats': {Row.POSITION_CHOICES.middle: 2, Row.POSITION_CHOICES.left: 1,
-                       Row.POSITION_CHOICES.right: 1}, 'properties': {
+            {'name': '2 hall', 'rows': {Row.POSITION_CHOICES.middle: 12, Row.POSITION_CHOICES.left: 12,
+                                        Row.POSITION_CHOICES.right: 12},
+             'seats': {Row.POSITION_CHOICES.middle: 12, Row.POSITION_CHOICES.left: 4,
+                       Row.POSITION_CHOICES.right: 4}, 'properties': {
                 'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
 
-            {'name': '3 hall', 'rows': {Row.POSITION_CHOICES.middle: 3, Row.POSITION_CHOICES.left: 3,
-                                        Row.POSITION_CHOICES.right: 3},
-             'seats': {Row.POSITION_CHOICES.middle: 3, Row.POSITION_CHOICES.left: 2,
-                       Row.POSITION_CHOICES.right: 2}, 'properties': {
+            {'name': '3 hall', 'rows': {Row.POSITION_CHOICES.middle: 10, Row.POSITION_CHOICES.left: 10,
+                                        Row.POSITION_CHOICES.right: 10},
+             'seats': {Row.POSITION_CHOICES.middle:10, Row.POSITION_CHOICES.left: 3,
+                       Row.POSITION_CHOICES.right: 3}, 'properties': {
                 'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
             # {'name': 'back hall', 'rows': {Row.POSITION_CHOICES.middle: 5}, 'seats': {'middle': 5}, 'properties': {
             #     'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
         ]
 
         for index, section in enumerate(sections):
+            if index == 0:
+                rank=golden_rank
+            else:
+                rank=new_rank
             sec_obj = Section.objects.create(name=section['name'], number=index + 1, hall=new_hall,
                                              **section['properties'])
             for row_position, row_numbers in section['rows'].items():
                 for row_number in range(row_numbers):
                     row_obj = Row.objects.create(section=sec_obj, position=row_position, number=row_number)
                     for seat in range(section['seats'][row_position]):
-                        seat_obj = Seat.objects.create(row=row_obj, number=seat, rank=new_rank)
+                        seat_obj = Seat.objects.create(row=row_obj, number=seat, rank=rank)
 
         return HttpResponse('done')
 

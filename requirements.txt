@@ -1,7 +1,7 @@
-amqp==2.6.1
+amqp
 asgiref==3.4.1
 billiard==3.6.4.0
-celery==4.4.7
+celery
 celery-progress==0.1.1
 click==8.0.3
 click-didyoumean==0.3.0
@@ -15,7 +15,7 @@ django-model-utils==4.2.0
 djangorestframework==3.12.4
 Faker==9.8.3
 importlib-metadata==4.8.2
-kombu==4.6.11
+kombu
 Markdown==3.3.6
 Pillow==8.4.0
 prompt-toolkit==3.0.23
@@ -26,7 +26,7 @@ redis==4.0.2
 six==1.12.0
 sqlparse==0.4.2
 text-unidecode==1.3
-vine==1.3.0
+vine==5.0.0
 wcwidth==0.2.5
 wrapt==1.13.3
 zipp==3.6.0

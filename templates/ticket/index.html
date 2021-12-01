@@ -3,6 +3,52 @@
 {% load define_action %}
 {% block body %}
     <body>
+    <nav style="width: 100%;" class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="width :100%;">
+                <a class="navbar-brand" href="#">Ticketing System</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url 'public:index' %}">Home<span
+                                    class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'hall:hall_list' %}">Hall List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'ticket:faker_view_html' %}">Test Seating Algorithm</a>
+                        </li>
+                        {% if user.is_anonymous %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admin:index' %}">Login</a>
+                            </li>
+                        {% endif %}
+
+                        {% if user.is_superuser %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admin:index' %}">Admin Panel</a>
+                            </li>
+                        {% endif %}
+
+                        {% if not user.is_anonymous %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admin:logout' %}">Logout</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+
+        </div>
+    </nav>
+
     <!-- partial:index.partial.html -->
     <div class="movie-container">
         <label>Pick a Seance: </label>
@@ -80,10 +126,12 @@
 
                 <textarea name="seats" id="textarea_seats" cols="30" rows="10" hidden></textarea>
                 {% csrf_token %}
-                <input type="submit" value="Buy Ticket" name="buy_ticket">
+                <input type="submit" value="Buy Ticket" name="buy_ticket" style="    margin: 0 auto !important;
+    text-align: center !important;
+    display: flex;">
             </form>
 
-            <p class="text">
+            <p class="text" style="color:white;">
                 You have selected <span id="count">0</span> seats for the total price of Rs. <span id="total">0</span>
             </p>
         </div>
