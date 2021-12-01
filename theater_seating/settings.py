@@ -13,7 +13,9 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import celery_progress
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -27,7 +29,7 @@ AUTH_USER_MODEL = 'user.User'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
 
 # Application definition
 
@@ -40,10 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user.apps.UserConfig',
     'hall.apps.HallConfig',
+    'django_celery_results',
     'rank.apps.RankConfig',
     'section.apps.SectionConfig',
     'row.apps.RowConfig',
-    'seat.apps.SeatConfig'
+    'seat.apps.SeatConfig',
+    'ticket.apps.TicketConfig',
+    'seance.apps.SeanceConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -79,10 +85,22 @@ WSGI_APPLICATION = 'theater_seating.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR + '/db.sqlite3',
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR + '/db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': '0.0.0.0',
+        'PORT': '5432',
     }
 }
 
@@ -115,15 +133,31 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [ os.path.join(BASE_DIR,'static') ]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),
+                    os.path.abspath(os.path.dirname(celery_progress.__file__)) + '/static/']
+
 # STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#
+# FAKER_LOCALE = None     # settings.LANGUAGE_CODE is loaded
+# FAKER_PROVIDERS = None  # faker.DEFAULT_PROVIDERS is loaded (all)
+
+LOGIN_URL = '/admin/login/'
+# Celery Config
+BROKER_URL = 'redis://redis:6378/0'
+# CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TRACK_STARTED = True
+CELERY_IGNORE_RESULT = False

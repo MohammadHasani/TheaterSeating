@@ -1,0 +1,42 @@
+.card-text {
+    display: -webkit-box;
+    max-width: 200px;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+img.card-img-top {
+    max-height: 168px;
+}
+
+a:hover {
+    text-decoration: none !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.introduction {
+    display: none;
+}
+
+.img-container {
+    text-align: center;
+}
+
+.img-detail {
+    max-width: 400px;
+}
+
+.row-detail {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+

@@ -9,6 +9,9 @@ class Hall(models.Model):
     # longitude = models.CharField(max_length=50)
     # latitude = models.CharField(max_length=100)
 
+    img = models.ImageField(null=True, upload_to='static/uploads/img/')
+    description = models.TextField(null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

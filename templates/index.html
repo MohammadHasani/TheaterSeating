@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body-style %}style="background: #fbb492 !important;"{% endblock %}
+
+{% block inside-body %}
+    <div class="img-container">
+        <img src="{% static 'public/img/background.jpg' %}" style="max-width:300px;" alt="">
+        <div class="introduction" style="text-align:center; padding:10px;">
+            <h1>I'm the best person you can find :)</h1>
+            <h2><a href="mailto:mohammad_hasani@live.com">mohammad_hasani@live.com</a></h2>
+        </div>
+    </div>
+    {% block extra_script %}
+        <script type="text/javascript" src="{% static 'public/js/hover.js' %}"></script>
+    {% endblock %}
+
+{% endblock %}

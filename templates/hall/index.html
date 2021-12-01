@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body-style %}style="background: #fbb492 !important;"{% endblock %}
+
+{#{% block inside-body %}#}
+{#    <img src="{% static 'public/img/background.jpg' %}" style="max-width:300px;" alt="">#}
+{#{% endblock %}#}
+{% block inside-body %}
+
+    <div class="row">
+        {% for hall in halls %}
+            <a href="{% url "hall:hall_detail" pk=hall.id %}" style="margin-top:-5px">
+                <div class="card" style="width: 18rem;height: 325px; margin-right: -5px; border:none !important;">
+                    <img class="card-img-top img-container" src="{{ request.scheme }}://{{ request.get_host }}/{{ hall.img }}"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-text" style="color: gray;">{{ hall.description }}</p>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}

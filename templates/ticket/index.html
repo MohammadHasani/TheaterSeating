@@ -1,171 +1,98 @@
+{% extends 'base.html' %}
 {% load static %}
+{% load define_action %}
+{% block body %}
+    <body>
+    <!-- partial:index.partial.html -->
+    <div class="movie-container">
+        <label>Pick a Seance: </label>
+        <select id="movie">
+            {#            <option value="250">Interstellar (Rs. 250)</option>#}
+            {#            <option value="200">Kabir Singh (Rs. 200)</option>#}
+            {#            <option value="150">Duniyadari (Rs. 150)</option>#}
+            {#            <option value="100">Natsamrat (Rs. 100)</option>#}
+        </select>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CodePen - Theatre Seat Booking UI</title>
-    <link rel="stylesheet" href="{% static 'ticket/css/style.css' %}">
+        <ul class="showcase">
 
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<div class="movie-container">
-    <label>Pick a Seance: </label>
-    <select id="movie">
-        <option value="250">Interstellar (Rs. 250)</option>
-        <option value="200">Kabir Singh (Rs. 200)</option>
-        <option value="150">Duniyadari (Rs. 150)</option>
-        <option value="100">Natsamrat (Rs. 100)</option>
-    </select>
+            {% for rank in ranks %}
+                <li>
+                    <div class="seat" style="background:{{ rank.color }}"></div>
+                    <small>{{ rank.name }}</small>
+                </li>
+            {% endfor %}
+        </ul>
 
-    <ul class="showcase">
-        <li>
-            <div class="seat"></div>
-            <small>N/A</small>
-        </li>
-        <li>
-            <div class="seat selected"></div>
-            <small>Selected</small>
-        </li>
-        <li>
-            <div class="seat occupied"></div>
-            <small>Occupied</small>
-        </li>
-    </ul>
+        <ul class="showcase">
 
-    <div class="container">
-        <div class="screen"></div>
+            <li>
+                <div class="seat selected"></div>
+                <small>Selected</small>
+            </li>
+            <li>
+                <div class="seat occupied"></div>
+                <small>Occupied</small>
+            </li>
 
-        <div class="front-seats">
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat occupied"></div>
-                <div class="seat occupied"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat occupied"></div>
-                <div class="seat occupied"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat occupied"></div>
-                <div class="seat occupied"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat occupied"></div>
-                <div class="seat occupied"></div>
-                <div class="seat occupied"></div>
-                <div class="seat"></div>
-            </div>
+
+        </ul>
+
+        <div class="container">
+            <div class="screen"></div>
+
+            <form method="post">
+                {% for section in sections %}
+
+                    <div class="{{ section.classes }}">
+                        {% for row in section.filtered_rows %}
+                            <div class="row">
+                                <div class="left"
+                                     {% if section.positioned_row.left_rows_list_degree %}style="transform: translateX({{ section.positioned_row.left_rows_list_degree|index:forloop.counter0 }}px)"{% endif %}>
+                                    {% for seat in row.left_seats %}
+                                        <div class="seat {% if seat.is_occupied %}occupied{% endif %}"
+                                             id="{{ seat.id }}" style="background: {{ seat.rank.color }}"><span
+                                                class="number">{{ seat.number }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="middle">
+                                    {% for seat in row.middle_seats %}
+                                        <div class="seat {% if seat.is_occupied %}occupied{% endif %}"
+                                             id="{{ seat.id }}" style="background: {{ seat.rank.color }}"><span
+                                                class="number">{{ seat.number }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="right"
+                                     {% if section.positioned_row.right_rows_list_degree %}style="transform: translateX({{ section.positioned_row.right_rows_list_degree|index:forloop.counter0 }}px)"{% endif %}>
+                                    {% for seat in row.right_seats %}
+                                        <div class="seat {% if seat.is_occupied %}occupied{% endif %}"
+                                             id="{{ seat.id }}" style="background: {{ seat.rank.color }}"><span
+                                                class="number">{{ seat.number }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                {% endfor %}
+
+                <textarea name="seats" id="textarea_seats" cols="30" rows="10" hidden></textarea>
+                {% csrf_token %}
+                <input type="submit" value="Buy Ticket" name="buy_ticket">
+            </form>
+
+            <p class="text">
+                You have selected <span id="count">0</span> seats for the total price of Rs. <span id="total">0</span>
+            </p>
         </div>
-
-        <div class="middle-seats">
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat occupied"></div>
-                <div class="seat occupied"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat occupied"></div>
-                <div class="seat occupied"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat occupied"></div>
-                <div class="seat occupied"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-            <div class="row">
-                <div class="seat"></div>
-            </div>
-        </div>
-
-
-        <p class="text">
-            You have selected <span id="count">0</span> seats for the total price of Rs. <span id="total">0</span>
-        </p>
     </div>
-</div>
 
-<div class="credits"><a href="http://www.aniket.co" target="_blank"></a></div>
-<!-- partial -->
-<script src="{% static 'ticket/js/script.js' %}"></script>
+    <div class="credits"><a href="http://www.aniket.co" target="_blank"></a></div>
+    <!-- partial -->
+    <script src="{% static 'ticket/js/script.js' %}"></script>
 
-</body>
+    </body>
+{% endblock %}
 </html>

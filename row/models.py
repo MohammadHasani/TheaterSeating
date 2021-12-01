@@ -25,4 +25,15 @@ class Row(models.Model):
         name = '(' + self.name + ')' if self.name else ''
         return str(
             self.number) + name + ' | ' + 'position: ' + self.POSITION_CHOICES[
-                   self.position] + ' -- ' + self.section.hall.name + ' | ' + self.section.name + ' | ' + 'position: '
+                   self.position] + ' -- ' + self.section.hall.name + ' | ' + self.section.name
+
+    @staticmethod
+    def get_positioned_rows(rows):
+        middle_rows = list(rows.filter(position=Row.POSITION_CHOICES.middle))
+        right_rows = list(rows.filter(position=Row.POSITION_CHOICES.right))
+        left_rows = list(rows.filter(position=Row.POSITION_CHOICES.left))
+        return middle_rows, right_rows, left_rows
+
+
+    # @staticmethod
+    # def

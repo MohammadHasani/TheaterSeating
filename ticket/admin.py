@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Ticket
+
+
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ('id', 'seat_id')
+
+
+admin.site.register(Ticket, TicketAdmin)
