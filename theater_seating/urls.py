@@ -28,7 +28,7 @@ urlpatterns = [
     path('tickets/', include('ticket.urls', namespace='ticket')),
     path('hall/', include('hall.urls', namespace='hall')),
     path('celery-progress/', include('celery_progress.urls')),
-    path('__debug__/', include(debug_toolbar.urls)),
+    # path('__debug__/', include(debug_toolbar.urls)),
 
 ]
 
