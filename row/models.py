@@ -9,9 +9,9 @@ class Row(models.Model):
                                (2, 'right', _('Right')),
                                )
     section = models.ForeignKey('section.Section', on_delete=models.CASCADE)
-    number = models.IntegerField()
+    number = models.IntegerField(db_index=True)
     name = models.CharField(max_length=200, blank=True, null=True)
-    position = models.IntegerField(choices=POSITION_CHOICES, default=POSITION_CHOICES.middle)
+    position = models.IntegerField(choices=POSITION_CHOICES, default=POSITION_CHOICES.middle, db_index=True)
 
     is_high_row = models.BooleanField(default=False)
 

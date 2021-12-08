@@ -16,24 +16,20 @@ class Seat(models.Model):
     def __str__(self):
         return str(self.id)
 
+    def save(self, *args, **kwargs):
+        if self.row.section.hall != self.rank.hall:
+            raise ValueError('The Rank and Row are not in related to each other.')
 
-def save(self, *args, **kwargs):
-    if self.row.section.hall != self.rank.hall:
-        raise ValueError('The Rank and Row are not in related to each other.')
+        return super(Seat, self).save(*args, **kwargs)
 
-    return super(Seat, self).save(*args, **kwargs)
+    @property
+    def is_aisle_seat(self):
+        return
 
+    @property
+    def is_front_row_seat(self):
+        return self.row.number == 1
 
-@property
-def is_aisle_seat(self):
-    return
-
-
-@property
-def is_front_row_seat(self):
-    return self.row.number == 1
-
-
-@property
-def is_high_seat(self):
-    return self.row.is_high_row
+    @property
+    def is_high_seat(self):
+        return self.row.is_high_row

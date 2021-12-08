@@ -49,12 +49,17 @@ def get_degree_of_every_row_for_curved_sections(section, degrees, position, rows
     return degree_list
 
 
-def set_seat_occupied_situation(seat_obj, seance_obj):
-    ticket = Ticket.available_object.filter(seance=seance_obj, seat=seat_obj)
-    seat_obj.is_occupied = True if ticket else False
-    return seat_obj
+# def set_seat_occupied_situation(seat_obj, seance_obj):
+#     ticket = Ticket.available_object.filter(seance=seance_obj, seat=seat_obj)
+#     seat_obj.is_occupied = True if ticket else False
+#     return seat_obj
 
 
-def set_seat_list_occupied_situation(seat_list_obj, seance_obj):
-    seat_list_obj = [set_seat_occupied_situation(seat, seance_obj) for seat in seat_list_obj]
+def set_seat_list_occupied_situation(seat_list_obj, tickets):
+    tickets = [i['seat__id'] for i in tickets]
+    for i in seat_list_obj:
+        if i['id'] in tickets:
+            i['is_occupied']=True
+        else:
+            i['is_occupied']=False
     return seat_list_obj

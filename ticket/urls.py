@@ -12,5 +12,6 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path('wallet/<int:user_id>/<str:seance_name>/', api_views.ListTicketView.as_view(), name='list_ticket_view'),
+    path(''
+         '', api_views.ListTicketView.as_view(), name='list_ticket_view'),
 ]

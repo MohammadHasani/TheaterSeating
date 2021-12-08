@@ -29,7 +29,7 @@ AUTH_USER_MODEL = 'user.User'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1','185.235.40.196']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', '185.235.40.196', '192.168.100.101']
 
 # Application definition
 
@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'ticket.apps.TicketConfig',
     'seance.apps.SeanceConfig',
     'rest_framework',
+    'django_extensions',
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -60,6 +62,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+
 ]
 
 ROOT_URLCONF = 'theater_seating.urls'
@@ -103,6 +107,10 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# INTERNAL_IPS = [
+#     "127.0.0.1",
+# ]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

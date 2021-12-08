@@ -92,11 +92,10 @@
                     <div class="{{ section.classes }}">
                         {% for row in section.filtered_rows %}
                             <div class="row">
-                                <div class="left"
-                                     {% if section.positioned_row.left_rows_list_degree %}style="transform: translateX({{ section.positioned_row.left_rows_list_degree|index:forloop.counter0 }}px)"{% endif %}>
+                            <div class="left">
                                     {% for seat in row.left_seats %}
                                         <div class="seat {% if seat.is_occupied %}occupied{% endif %}"
-                                             id="{{ seat.id }}" style="background: {{ seat.rank.color }}"><span
+                                             id="{{ seat.id }}" style="background: {{ seat.rank__color }}"><span
                                                 class="number">{{ seat.number }}</span>
                                         </div>
                                     {% endfor %}
@@ -104,20 +103,20 @@
                                 <div class="middle">
                                     {% for seat in row.middle_seats %}
                                         <div class="seat {% if seat.is_occupied %}occupied{% endif %}"
-                                             id="{{ seat.id }}" style="background: {{ seat.rank.color }}"><span
+                                             id="{{ seat.id }}" style="background: {{ seat.rank__color }}"><span
                                                 class="number">{{ seat.number }}</span>
                                         </div>
                                     {% endfor %}
                                 </div>
-                                <div class="right"
-                                     {% if section.positioned_row.right_rows_list_degree %}style="transform: translateX({{ section.positioned_row.right_rows_list_degree|index:forloop.counter0 }}px)"{% endif %}>
+                            <div class="right">
                                     {% for seat in row.right_seats %}
                                         <div class="seat {% if seat.is_occupied %}occupied{% endif %}"
-                                             id="{{ seat.id }}" style="background: {{ seat.rank.color }}"><span
+                                             id="{{ seat.id }}" style="background: {{ seat.rank__color }}"><span
                                                 class="number">{{ seat.number }}</span>
                                         </div>
                                     {% endfor %}
                                 </div>
+
                             </div>
                         {% endfor %}
                     </div>

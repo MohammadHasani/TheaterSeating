@@ -25,11 +25,12 @@ class TicketView(View):
         try:
             seance_name = request.GET.get('seance_name')
             seance_obj = Seance.objects.get(name=seance_name)
+            tickets = Ticket.objects.filter(seance=seance_obj).values('seat__id')
 
-            hall = seance_obj.hall
-            sections = Section.objects.filter(hall=hall)
+            seats = Seat.objects.filter(row__section__hall=seance_obj.hall)
+            sections = Section.objects.filter(hall=seance_obj.hall)
 
-            ranks = Rank.objects.filter(hall=hall)
+            ranks = Rank.objects.filter(hall=seance_obj.hall)
 
             section_list = []
             for i in sections:
@@ -68,17 +69,18 @@ class TicketView(View):
                                                                                                       start_x_degree=-150)
                 filtered_rows = []
                 for j in rows_list:
-                    middle_seats = Seat.objects.filter(row__number=j.number, row__section=j.section,
-                                                       row__position=Row.POSITION_CHOICES.middle)
-                    middle_seats = set_seat_list_occupied_situation(list(middle_seats), seance_obj)
+                    middle_seats = seats.filter(row__number=j.number, row__section=j.section,
+                                                row__position=Row.POSITION_CHOICES.middle).values('rank__color','id','number')
 
-                    right_seats = Seat.objects.filter(row__number=j.number, row__section=j.section,
-                                                      row__position=Row.POSITION_CHOICES.right)
-                    right_seats = set_seat_list_occupied_situation(list(right_seats), seance_obj)
+                    middle_seats = set_seat_list_occupied_situation(list(middle_seats), tickets)
 
-                    left_seats = Seat.objects.filter(row__number=j.number, row__section=j.section,
-                                                     row__position=Row.POSITION_CHOICES.left)
-                    left_seats = set_seat_list_occupied_situation(list(left_seats), seance_obj)
+                    right_seats = seats.filter(row__number=j.number, row__section=j.section,
+                                               row__position=Row.POSITION_CHOICES.right).values('rank__color','id','number')
+                    right_seats = set_seat_list_occupied_situation(list(right_seats), tickets)
+
+                    left_seats = seats.filter(row__number=j.number, row__section=j.section,
+                                              row__position=Row.POSITION_CHOICES.left).values('rank__color','id','number')
+                    left_seats = set_seat_list_occupied_situation(list(left_seats), tickets)
 
                     filtered_rows.append(
                         {'middle_seats': middle_seats, 'right_seats': right_seats, 'left_seats': left_seats})
@@ -89,6 +91,7 @@ class TicketView(View):
                      'is_back_space': i.is_back_space, 'is_left_space': i.is_left_space,
                      'is_right_space': i.is_right_space, 'classes': section_classes, 'positioned_row': positioned_row})
 
+            # return render(request, 'ticket/index.html', {'sections': section_list, 'ranks': ranks})
             return render(request, 'ticket/index.html', {'sections': section_list, 'ranks': ranks})
         except Exception as e:
             return HttpResponse(str(e))
@@ -111,29 +114,29 @@ class TicketView(View):
 class FakerView(View):
     def get(self, request, *args, **kwargs):
         admin = User.objects.get(id=1)
-        new_hall = Hall.objects.get(id=2)
-        new_rank = Rank.objects.create(hall=new_hall, name="economy", price='1000',color='#d6d6d6')
-        golden_rank = Rank.objects.get(id=5)
+        new_hall = Hall.objects.get(id=1)
+        new_rank = Rank.objects.create(hall=new_hall, name="economy", price='1000', color='#d6d6d6')
+        golden_rank = Rank.objects.create(hall=new_hall, name="VIP", price='5000', color='yellow')
 
         sections = [
             # {'name': 'main hall', 'rows': {Row.POSITION_CHOICES.middle: 5}, 'seats': {'middle': 5}, 'properties': {
             #     'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
-            {'name': '1 hall', 'rows': {Row.POSITION_CHOICES.middle: 10, Row.POSITION_CHOICES.left: 10,
-                                        Row.POSITION_CHOICES.right: 10},
-             'seats': {Row.POSITION_CHOICES.middle: 10, Row.POSITION_CHOICES.left: 3,
-                       Row.POSITION_CHOICES.right: 3}, 'properties': {
+            {'name': '1 hall', 'rows': {Row.POSITION_CHOICES.middle: 30, Row.POSITION_CHOICES.left: 30,
+                                        Row.POSITION_CHOICES.right: 30},
+             'seats': {Row.POSITION_CHOICES.middle: 15, Row.POSITION_CHOICES.left: 7,
+                       Row.POSITION_CHOICES.right: 7}, 'properties': {
                 'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
 
-            {'name': '2 hall', 'rows': {Row.POSITION_CHOICES.middle: 12, Row.POSITION_CHOICES.left: 12,
-                                        Row.POSITION_CHOICES.right: 12},
-             'seats': {Row.POSITION_CHOICES.middle: 12, Row.POSITION_CHOICES.left: 4,
-                       Row.POSITION_CHOICES.right: 4}, 'properties': {
+            {'name': '2 hall', 'rows': {Row.POSITION_CHOICES.middle: 22, Row.POSITION_CHOICES.left: 22,
+                                        Row.POSITION_CHOICES.right: 22},
+             'seats': {Row.POSITION_CHOICES.middle: 12, Row.POSITION_CHOICES.left: 9,
+                       Row.POSITION_CHOICES.right: 9}, 'properties': {
                 'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
 
-            {'name': '3 hall', 'rows': {Row.POSITION_CHOICES.middle: 10, Row.POSITION_CHOICES.left: 10,
-                                        Row.POSITION_CHOICES.right: 10},
-             'seats': {Row.POSITION_CHOICES.middle:10, Row.POSITION_CHOICES.left: 3,
-                       Row.POSITION_CHOICES.right: 3}, 'properties': {
+            {'name': '3 hall', 'rows': {Row.POSITION_CHOICES.middle: 19, Row.POSITION_CHOICES.left: 19,
+                                        Row.POSITION_CHOICES.right: 19},
+             'seats': {Row.POSITION_CHOICES.middle: 20, Row.POSITION_CHOICES.left: 10,
+                       Row.POSITION_CHOICES.right: 10}, 'properties': {
                 'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
             # {'name': 'back hall', 'rows': {Row.POSITION_CHOICES.middle: 5}, 'seats': {'middle': 5}, 'properties': {
             #     'is_front_space': True, 'is_back_space': True, 'is_left_space': True, 'is_right_space': True}},
@@ -141,9 +144,9 @@ class FakerView(View):
 
         for index, section in enumerate(sections):
             if index == 0:
-                rank=golden_rank
+                rank = golden_rank
             else:
-                rank=new_rank
+                rank = new_rank
             sec_obj = Section.objects.create(name=section['name'], number=index + 1, hall=new_hall,
                                              **section['properties'])
             for row_position, row_numbers in section['rows'].items():
