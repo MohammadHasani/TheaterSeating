@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load define_action %}
+{% block body %}
+    <body>
+    <nav style="width: 100%;" class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="width :100%;">
+                <a class="navbar-brand" href="#">Ticketing System</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url 'public:index' %}">Home<span
+                                    class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'hall:hall_list' %}">Hall List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'ticket:faker_view_html' %}">Test Seating Algorithm</a>
+                        </li>
+                        {% if user.is_anonymous %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admin:index' %}">Login</a>
+                            </li>
+                        {% endif %}
+
+                        {% if user.is_superuser %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admin:index' %}">Admin Panel</a>
+                            </li>
+                        {% endif %}
+
+                        {% if not user.is_anonymous %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admin:logout' %}">Logout</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+
+        </div>
+    </nav>
+
+    <!-- partial:index.partial.html -->
+    <div class="movie-container">
+        <label>Pick a Seance: </label>
+        <select id="movie">
+            {#            <option value="250">Interstellar (Rs. 250)</option>#}
+            {#            <option value="200">Kabir Singh (Rs. 200)</option>#}
+            {#            <option value="150">Duniyadari (Rs. 150)</option>#}
+            {#            <option value="100">Natsamrat (Rs. 100)</option>#}
+        </select>
+
+        <ul class="showcase">
+
+            {% for rank in ranks %}
+                <li>
+                    <div class="seat" style="background:{{ rank.color }}"></div>
+                    <small>{{ rank.name }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <ul class="showcase">
+
+            <li>
+                <div class="seat selected"></div>
+                <small>Selected</small>
+            </li>
+            <li>
+                <div class="seat occupied"></div>
+                <small>Occupied</small>
+            </li>
+
+
+        </ul>
+
+        <div class="container">
+            <div class="screen"></div>
+
+            <form method="post">
+                {% for section in sections %}
+
+                    <div class="{{ section.classes }}">
+                        {% for row in section.filtered_rows %}
+                            <div class="row">
+                            <div class="left">
+                                    {% for seat in row.left_seats %}
+                                        <div class="seat {% if seat.is_occupied %}occupied{% endif %}"
+                                             id="{{ seat.id }}" style="background: {{ seat.rank__color }}"><span
+                                                class="number">{{ seat.number }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="middle">
+                                    {% for seat in row.middle_seats %}
+                                        <div class="seat {% if seat.is_occupied %}occupied{% endif %}"
+                                             id="{{ seat.id }}" style="background: {{ seat.rank__color }}"><span
+                                                class="number">{{ seat.number }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            <div class="right">
+                                    {% for seat in row.right_seats %}
+                                        <div class="seat {% if seat.is_occupied %}occupied{% endif %}"
+                                             id="{{ seat.id }}" style="background: {{ seat.rank__color }}"><span
+                                                class="number">{{ seat.number }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                {% endfor %}
+
+                <textarea name="seats" id="textarea_seats" cols="30" rows="10" hidden></textarea>
+                {% csrf_token %}
+                <input type="submit" value="Buy Ticket" name="buy_ticket" style="    margin: 0 auto !important;
+    text-align: center !important;
+    display: flex;">
+            </form>
+
+            <p class="text" style="color:white;">
+                You have selected <span id="count">0</span> seats for the total price of Rs. <span id="total">0</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="credits"><a href="http://www.aniket.co" target="_blank"></a></div>
+    <!-- partial -->
+    <script src="{% static 'ticket/js/script.js' %}"></script>
+
+    </body>
+{% endblock %}
+</html>

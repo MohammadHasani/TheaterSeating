@@ -6,6 +6,8 @@ __pycache__
 db.sqlite3
 media
 
+.idea/
+
 # Backup files #
 *.bak
 
@@ -71,6 +73,9 @@ wheels/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+./postgres
+postgres/
+
 
 # Unit test / coverage reports
 htmlcov/
