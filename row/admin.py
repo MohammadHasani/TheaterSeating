@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Row
+
+
+class RowAdmin(admin.ModelAdmin):
+    list_display = ('number', 'section', 'position', 'name', 'id')
+    list_filter = ('section', 'position')
+
+
+admin.site.register(Row, RowAdmin)
